@@ -1,0 +1,15 @@
+{
+  "$schema": "https://github.com/anthropics/claude-code/raw/main/schema/mcp.json",
+  "mcpServers": {
+    "discord-decision": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "discord_mcp.server"],
+      "cwd": "/path/to/discord-decision",
+      "env": {
+        "DISCORD_BOT_TOKEN": "Bot YOUR_BOT_TOKEN_HERE",
+        "DISCORD_CHANNEL_ID": "123456789012345678",
+        "PROJECT_NAME": "my-project"
+      }
+    }
+  }
+}
