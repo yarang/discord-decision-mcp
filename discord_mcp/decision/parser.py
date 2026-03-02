@@ -82,16 +82,7 @@ def parse_response(
                 interpreted=f"부정 → {options[1]}",
             )
 
-    # 3. 모호성 감지
-    if _AMBIGUOUS.search(cleaned) or len(cleaned) < 3:
-        return ParseResult(
-            is_clear=False,
-            answer=cleaned,
-            selected_option=None,
-            interpreted="응답이 모호합니다",
-        )
-
-    # 4. 자연어 응답 (선택지 없는 자유 응답)
+    # 3. 자연어 응답 (선택지 없는 자유 응답)
     if not options:
         return ParseResult(
             is_clear=True,
@@ -100,12 +91,30 @@ def parse_response(
             interpreted=cleaned[:100],
         )
 
-    # 5. 선택지가 있는데 매칭 안 됨 → 불명확
+    # 4. 긴 텍스트는 자유 명령으로 처리 (15자 이상 또는 한글 문장)
+    if len(cleaned) >= 15 or re.search(r'[가-힣]{3,}', cleaned):
+        return ParseResult(
+            is_clear=True,
+            answer=cleaned,
+            selected_option=None,
+            interpreted=f"자유 명령: {cleaned[:100]}",
+        )
+
+    # 5. 모호성 감지
+    if _AMBIGUOUS.search(cleaned) or len(cleaned) < 3:
+        return ParseResult(
+            is_clear=False,
+            answer=cleaned,
+            selected_option=None,
+            interpreted="응답이 모호합니다",
+        )
+
+    # 6. 선택지가 있는데 매칭 안 됨 → 자유 텍스트로 처리 (불명확 대신)
     return ParseResult(
-        is_clear=False,
+        is_clear=True,
         answer=cleaned,
         selected_option=None,
-        interpreted="선택지와 일치하지 않습니다",
+        interpreted=f"선택지 외 응답: {cleaned[:100]}",
     )
 
 

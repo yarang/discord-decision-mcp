@@ -25,15 +25,15 @@ cp .env.example .env
 
 ### 2. Claude Code MCP 설정
 
-`~/.claude/mcp.json`에 다음을 추가:
+프로젝트 루트에 `.mcp.json` 파일 생성:
 
 ```json
 {
+  "$schema": "https://github.com/anthropics/claude-code/raw/main/schema/mcp.json",
   "mcpServers": {
     "discord-decision": {
       "command": "uv",
-      "args": ["run", "python", "-m", "discord_mcp.server"],
-      "cwd": "/path/to/discord-decision",
+      "args": ["run", "--directory", "/path/to/discord-decision", "discord-mcp"],
       "env": {
         "DISCORD_BOT_TOKEN": "Bot YOUR_BOT_TOKEN",
         "DISCORD_CHANNEL_ID": "YOUR_CHANNEL_ID",
@@ -44,21 +44,7 @@ cp .env.example .env
 }
 ```
 
-또는 설치 후:
-```json
-{
-  "mcpServers": {
-    "discord-decision": {
-      "command": "discord-mcp",
-      "env": {
-        "DISCORD_BOT_TOKEN": "Bot YOUR_BOT_TOKEN",
-        "DISCORD_CHANNEL_ID": "YOUR_CHANNEL_ID",
-        "PROJECT_NAME": "your-project-name"
-      }
-    }
-  }
-}
-```
+**참고**: `~/.claude/settings.json`에 `enableAllProjectMcpServers: true`가 설정되어 있어야 프로젝트 MCP 서버가 자동으로 로드됩니다.
 
 ---
 
@@ -277,10 +263,89 @@ POLL_INTERVAL_SECONDS=5                  # Discord polling 간격 (초)
 
 ---
 
+## 감시 데몬 (Discord Watcher)
+
+Claude Code 세션과 무관하게 Discord 채널을 감시하는 별도 프로세스다.
+사용자가 Discord에 보낸 메시지를 수집하여 inbox 파일에 저장한다.
+
+### 시작하기
+
+```bash
+# tmux 세션에서 감시 데몬 시작
+./scripts/start-discord-watch.sh
+
+# 또는 직접 실행
+uv run discord-watch --interval 10
+
+# 상태 확인
+tmux attach -t discord-watch
+
+# 중지
+tmux kill-session -t discord-watch
+```
+
+### Inbox 확인
+
+Claude Code에서 `discord_read_inbox` Tool로 메시지를 확인한다:
+
+```
+mcp__discord_decision__discord_read_inbox
+```
+
+**파라미터:**
+| 이름 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| unread_only | bool | true | 읽지 않은 메시지만 반환 |
+| mark_read | bool | false | 조회한 메시지를 읽음으로 표시 |
+
+**반환값:**
+```json
+{
+  "success": true,
+  "messages": [
+    {
+      "message_id": "1234567890",
+      "channel_id": "1234567890",
+      "thread_id": null,
+      "author": "username",
+      "content": "메시지 내용",
+      "timestamp": "2024-01-01T00:00:00Z",
+      "read": false
+    }
+  ],
+  "count": 1,
+  "unread_count": 1
+}
+```
+
+### Inbox 정리
+
+```
+mcp__discord_decision__discord_clear_inbox
+```
+
+**파라미터:**
+| 이름 | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| read_only | bool | true | 읽은 메시지만 삭제 |
+
+### 아키텍처
+
+```
+[Discord API]
+     ↓ polling (10초 간격)
+[discord-watch 데몬] → ~/.claude/discord_inbox.json
+                              ↓
+                    [Claude Code] discord_read_inbox()
+```
+
+---
+
 ## 개발 시 참고
 
 - 모든 Discord API 호출은 `discord_mcp/bot/client.py`의 `DiscordClient`를 통한다
 - 상태 파일은 `~/.claude/pending_decisions/{question_id}.json`에 저장된다
+- Inbox 파일은 `~/.claude/discord_inbox.json`에 저장된다
 - WebSocket은 수신 전용이며 `discord_mcp/bot/gateway.py`가 관리한다
 - 응답 파싱 실패 시 재질문은 최대 2회까지만 한다
 - 테스트는 `pytest tests/`로 실행한다

@@ -17,10 +17,9 @@ git clone <repo-url>
 cd discord-decision
 
 # 의존성 설치
-uv sync
+uv sync  # 개발용 가상환경 생성 및 의존성 설치
 
-# 또는 pip 사용
-pip install -e .
+# (권장) `uv` 명령을 사용하세요; pip는 내부적으로 `uv`가 관리합니다.
 ```
 
 ## 설정
@@ -49,15 +48,15 @@ PROJECT_NAME=my-project
 
 ### 3. Claude Code MCP 설정
 
-`~/.claude/mcp.json`에 추가:
+프로젝트 루트에 `.mcp.json` 생성:
 
 ```json
 {
+  "$schema": "https://github.com/anthropics/claude-code/raw/main/schema/mcp.json",
   "mcpServers": {
     "discord-decision": {
       "command": "uv",
-      "args": ["run", "python", "-m", "discord_mcp.server"],
-      "cwd": "/path/to/discord-decision",
+      "args": ["run", "--directory", "/path/to/discord-decision", "discord-mcp"],
       "env": {
         "DISCORD_BOT_TOKEN": "Bot YOUR_BOT_TOKEN",
         "DISCORD_CHANNEL_ID": "123456789012345678",
@@ -67,6 +66,8 @@ PROJECT_NAME=my-project
   }
 }
 ```
+
+**참고**: `enableAllProjectMcpServers: true` 설정이 `~/.claude/settings.json`에 있으면 `.mcp.json`의 서버들이 자동으로 로드됩니다.
 
 ## MCP Tools
 

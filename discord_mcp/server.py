@@ -37,6 +37,7 @@ from discord_mcp.tools.ask import discord_ask_decision
 from discord_mcp.tools.notify import discord_notify
 from discord_mcp.tools.report import discord_report_progress
 from discord_mcp.tools.status import discord_check_pending
+from discord_mcp.tools.inbox import discord_read_inbox, discord_clear_inbox
 
 logging.basicConfig(
     level=logging.INFO,
@@ -66,6 +67,8 @@ mcp.tool()(discord_ask_decision)
 mcp.tool()(discord_notify)
 mcp.tool()(discord_report_progress)
 mcp.tool()(discord_check_pending)
+mcp.tool()(discord_read_inbox)
+mcp.tool()(discord_clear_inbox)
 
 
 # ── 진입점 ──────────────────────────────────────────────────────
