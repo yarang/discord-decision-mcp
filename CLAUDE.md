@@ -27,18 +27,48 @@ cp .env.example .env
 
 프로젝트 루트에 `.mcp.json` 파일 생성:
 
+#### uvx 사용 (PyPI 배포 후 - 권장)
+
 ```json
 {
   "$schema": "https://github.com/anthropics/claude-code/raw/main/schema/mcp.json",
   "mcpServers": {
     "discord-decision": {
-      "command": "uv",
-      "args": ["run", "--directory", "/path/to/discord-decision", "discord-mcp"],
+      "command": "uvx",
+      "args": ["discord-decision-mcp"],
       "env": {
         "DISCORD_BOT_TOKEN": "Bot YOUR_BOT_TOKEN",
         "DISCORD_CHANNEL_ID": "YOUR_CHANNEL_ID",
         "PROJECT_NAME": "your-project-name"
       }
+    }
+  }
+}
+```
+
+#### GitHub 직접 사용
+
+```json
+{
+  "mcpServers": {
+    "discord-decision": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/yourusername/discord-decision-mcp", "discord-mcp"],
+      "env": { ... }
+    }
+  }
+}
+```
+
+#### 로컬 개발용
+
+```json
+{
+  "mcpServers": {
+    "discord-decision": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/discord-decision-mcp", "discord-mcp"],
+      "env": { ... }
     }
   }
 }
@@ -348,4 +378,19 @@ mcp__discord_decision__discord_clear_inbox
 - Inbox 파일은 `~/.claude/discord_inbox.json`에 저장된다
 - WebSocket은 수신 전용이며 `discord_mcp/bot/gateway.py`가 관리한다
 - 응답 파싱 실패 시 재질문은 최대 2회까지만 한다
-- 테스트는 `pytest tests/`로 실행한다
+
+### 개발 명령어
+
+```bash
+# 테스트 실행
+uv run pytest tests/ -v
+
+# 타입 체크
+uv run pyright discord_mcp/
+
+# 포맷팅
+uv run ruff format discord_mcp/
+
+# 린트
+uv run ruff check discord_mcp/
+```

@@ -6,7 +6,21 @@ build-backend = "hatchling.build"
 name = "discord-decision-mcp"
 version = "1.0.0"
 description = "Discord-based decision system for Claude Code tmux teammate mode"
+readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11"
+authors = [
+    { name = "Your Name", email = "your@email.com" }
+]
+keywords = ["mcp", "discord", "claude", "ai", "llm", "decision"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "fastmcp>=0.1.0",
     "httpx>=0.27.0",
@@ -21,12 +35,19 @@ dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-mock>=3.12.0",
-    "respx>=0.21.0",      # httpx mocking
+    "respx>=0.21.0",
+    "ruff>=0.4.0",
+    "pyright>=1.0.0",
 ]
 
 [project.scripts]
 discord-mcp = "discord_mcp.server:main"
 discord-watch = "discord_mcp.daemon.watcher:cli"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/discord-decision-mcp"
+Repository = "https://github.com/yourusername/discord-decision-mcp"
+Issues = "https://github.com/yourusername/discord-decision-mcp/issues"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -34,3 +55,14 @@ testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["discord_mcp"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"

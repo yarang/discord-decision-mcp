@@ -2,15 +2,39 @@
   "$schema": "https://github.com/anthropics/claude-code/raw/main/schema/mcp.json",
   "mcpServers": {
     "discord-decision": {
-      "command": "uv",
-      "args": ["run", "--directory", "/path/to/discord-decision", "discord-mcp"],
+      "_comment": "방법 1: uvx로 PyPI 패키지 실행 (권장)",
+      "command": "uvx",
+      "args": ["discord-decision-mcp"],
       "env": {
         "DISCORD_BOT_TOKEN": "Bot YOUR_BOT_TOKEN_HERE",
         "DISCORD_CHANNEL_ID": "123456789012345678",
-        "PROJECT_NAME": "my-project",
-        "PENDING_DIR": "~/.claude/pending_decisions",
-        "POLL_INTERVAL_SECONDS": "5"
+        "PROJECT_NAME": "my-project"
       }
     }
   }
 }
+
+// ─────────────────────────────────────────────────────────────────
+// 대안 설정 방법:
+//
+// 방법 2: GitHub에서 직접 실행
+// {
+//   "command": "uvx",
+//   "args": ["--from", "git+https://github.com/yourusername/discord-decision-mcp", "discord-mcp"],
+//   "env": { ... }
+// }
+//
+// 방법 3: 로컬 개발용
+// {
+//   "command": "uv",
+//   "args": ["run", "--directory", "/path/to/discord-decision-mcp", "discord-mcp"],
+//   "env": { ... }
+// }
+//
+// 방법 4: 특정 버전 지정
+// {
+//   "command": "uvx",
+//   "args": ["discord-decision-mcp@1.0.0"],
+//   "env": { ... }
+// }
+// ─────────────────────────────────────────────────────────────────
