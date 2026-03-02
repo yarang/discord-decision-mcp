@@ -26,7 +26,7 @@ class DiscordClient:
         self._http = httpx.AsyncClient(
             base_url=config.API_BASE,
             headers={
-                **config.auth_header(),
+                **config.auth_header,
                 "Content-Type": "application/json",
                 "User-Agent": "DiscordBot (discord-decision-mcp, 1.0.0)",
             },
