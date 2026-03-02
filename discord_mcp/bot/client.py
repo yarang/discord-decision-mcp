@@ -65,6 +65,33 @@ class DiscordClient:
             "GET", f"/channels/{channel_id}/messages", params=params
         )
 
+    async def delete_message(
+        self,
+        channel_id: str,
+        message_id: str,
+    ) -> bool:
+        """메시지를 삭제한다. 성공 시 True 반환."""
+        await self._request(
+            "DELETE", f"/channels/{channel_id}/messages/{message_id}"
+        )
+        return True
+
+    async def delete_messages(
+        self,
+        channel_id: str,
+        message_ids: list[str],
+    ) -> int:
+        """여러 메시지를 일괄 삭제한다 (2-100개). 삭제된 개수 반환."""
+        if len(message_ids) < 2 or len(message_ids) > 100:
+            raise ValueError("일괄 삭제는 2-100개 메시지만 가능합니다.")
+
+        await self._request(
+            "POST",
+            f"/channels/{channel_id}/messages/bulk-delete",
+            json={"messages": message_ids},
+        )
+        return len(message_ids)
+
     # ── Thread ──────────────────────────────────────────────────
 
     async def create_thread(
