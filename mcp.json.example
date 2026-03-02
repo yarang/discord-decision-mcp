@@ -20,7 +20,7 @@
 // 방법 2: GitHub에서 직접 실행
 // {
 //   "command": "uvx",
-//   "args": ["--from", "git+https://github.com/yourusername/discord-decision-mcp", "discord-mcp"],
+//   "args": ["--from", "git+https://github.com/yarang/discord-decision-mcp", "discord-mcp"],
 //   "env": { ... }
 // }
 //

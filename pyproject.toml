@@ -45,9 +45,9 @@ discord-mcp = "discord_mcp.server:main"
 discord-watch = "discord_mcp.daemon.watcher:cli"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/discord-decision-mcp"
-Repository = "https://github.com/yourusername/discord-decision-mcp"
-Issues = "https://github.com/yourusername/discord-decision-mcp/issues"
+Homepage = "https://github.com/yarang/discord-decision-mcp"
+Repository = "https://github.com/yarang/discord-decision-mcp"
+Issues = "https://github.com/yarang/discord-decision-mcp/issues"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

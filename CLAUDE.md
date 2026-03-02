@@ -53,7 +53,7 @@ cp .env.example .env
   "mcpServers": {
     "discord-decision": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/yourusername/discord-decision-mcp", "discord-mcp"],
+      "args": ["--from", "git+https://github.com/yarang/discord-decision-mcp", "discord-mcp"],
       "env": { ... }
     }
   }
